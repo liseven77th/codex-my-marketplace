@@ -324,7 +324,7 @@ The source marketplace's four `.lsp.json` plugins are therefore not published he
 │       ├── hooks/                 # Lifecycle hooks and helpers
 │       ├── scripts/               # Deterministic workflow utilities
 │       └── .mcp.json              # MCP server definitions
-├── examples/\n└── _archive/                      # Retired, unpublished plugins
+└── _archive/                      # Retired, unpublished plugins
 ```
 
 Marketplace entries resolve to `./plugins/<plugin-name>`. Each active plugin has a matching native manifest, and archived plugins are deliberately absent from the marketplace.
