@@ -16,6 +16,7 @@
 import { existsSync, readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join, basename } from 'node:path';
+import { countSpeechUnits, hasHan, splitChineseCaptions } from './lib/chinese-text.mjs';
 
 // ── Tunables. These are editorial choices, documented in skills/demo-assembly. ──
 const LEAD_IN = 0.25;        // silence before narration starts, so a cut never lands on a word
@@ -105,24 +106,32 @@ const captionsMode = meta.captions || 'section';
 const buildCaptions = (text, startFrame, durationFrames) => {
   const clean = String(text || '').trim();
   if (!clean) return [];
-  const chunks = [];
-  // Sentence first, then split anything still too long on commas / word count.
-  for (const sentence of clean.split(/(?<=[.!?])\s+/)) {
-    const words = sentence.split(/\s+/).filter(Boolean);
-    if (words.length <= 9) {
-      chunks.push(words.join(' '));
-      continue;
+  let chunks;
+  if (hasHan(clean)) {
+    // Chinese subtitles do not use spaces as word boundaries.
+    chunks = splitChineseCaptions(clean, 18);
+  } else {
+    chunks = [];
+    for (const sentence of clean.split(/(?<=[.!?])\s+/)) {
+      const words = sentence.split(/\s+/).filter(Boolean);
+      if (words.length <= 9) chunks.push(words.join(' '));
+      else for (let i = 0; i < words.length; i += 8) chunks.push(words.slice(i, i + 8).join(' '));
     }
-    for (let i = 0; i < words.length; i += 8) chunks.push(words.slice(i, i + 8).join(' '));
   }
-  const totalWords = chunks.reduce((n, c) => n + c.split(/\s+/).length, 0) || 1;
+  const weights = chunks.map((chunk) => Math.max(1, countSpeechUnits(chunk)));
+  const totalWeight = weights.reduce((sum, weight) => sum + weight, 0) || 1;
+  const endFrame = startFrame + durationFrames;
   let cursor = startFrame;
-  return chunks.map((c, i) => {
-    const share = c.split(/\s+/).length / totalWords;
-    const len = i === chunks.length - 1 ? startFrame + durationFrames - cursor : Math.round(durationFrames * share);
-    const out = { text: c, startFrame: cursor, endFrame: cursor + Math.max(len, 6) };
-    cursor = out.endFrame;
-    return out;
+  let accumulated = 0;
+  return chunks.map((chunk, index) => {
+    accumulated += weights[index];
+    const proposedEnd = index === chunks.length - 1
+      ? endFrame
+      : startFrame + Math.round(durationFrames * accumulated / totalWeight);
+    const next = Math.max(cursor + 1, Math.min(endFrame, proposedEnd));
+    const caption = { text: chunk, startFrame: cursor, endFrame: next };
+    cursor = next;
+    return caption;
   });
 };
 

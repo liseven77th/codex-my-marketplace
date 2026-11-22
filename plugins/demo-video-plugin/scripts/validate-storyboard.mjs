@@ -10,6 +10,7 @@
 // the cheapest moment to learn that is the moment the storyboard is written.
 
 import { readFileSync } from 'node:fs';
+import { countSpeechUnits, hasHan } from './lib/chinese-text.mjs';
 
 const WPS_MIN = 1.6; // below this the narration is too sparse for the time on screen
 const WPS_MAX = 3.0; // above this it is rushed
@@ -181,18 +182,26 @@ sections.forEach((s, i) => {
   const vo = String(s.voiceover ?? '');
   if (s.voiceover === undefined) errors.push(`${at}: voiceover is required (use "" for a deliberately silent beat).`);
   const words = vo.trim() ? vo.trim().split(/\s+/).length : 0;
-  if (words && secs) {
-    const wps = words / secs;
-    const suggested = Math.round(secs * 2.3);
-    if (wps < WPS_HARD_MIN || wps > WPS_HARD_MAX) {
+  const speechUnits = countSpeechUnits(vo);
+  const chineseNarration = hasHan(vo);
+  if (speechUnits && secs) {
+    const pace = speechUnits / secs;
+    const minPace = chineseNarration ? 2.4 : WPS_MIN;
+    const maxPace = chineseNarration ? 5.2 : WPS_MAX;
+    const hardMinPace = chineseNarration ? 1.8 : WPS_HARD_MIN;
+    const hardMaxPace = chineseNarration ? 6.2 : WPS_HARD_MAX;
+    const targetPace = chineseNarration ? 3.8 : 2.3;
+    const suggested = Math.round(secs * targetPace);
+    const unitLabel = chineseNarration ? 'Chinese speech units/sec' : 'words/sec';
+    if (pace < hardMinPace || pace > hardMaxPace) {
       errors.push(
-        `${at}: ${words} words in ${secs}s is ${wps.toFixed(2)} words/sec — unusable. ` +
-          `Aim for ~${suggested} words, or change targetSeconds to ~${Math.ceil(words / 2.3)}s.`
+        \`\${at}: \${speechUnits} speech units in \${secs}s is \${pace.toFixed(2)} \${unitLabel} — unusable. \` +
+          \`Aim for ~\${suggested} speech units, or change targetSeconds to ~\${Math.ceil(speechUnits / targetPace)}s.\`
       );
-    } else if (wps < WPS_MIN || wps > WPS_MAX) {
+    } else if (pace < minPace || pace > maxPace) {
       warnings.push(
-        `${at}: ${wps.toFixed(2)} words/sec (${words} words in ${secs}s). Comfortable is 1.6-3.0; ` +
-          `~${suggested} words would sit in the middle.`
+        \`\${at}: \${pace.toFixed(2)} \${unitLabel} (\${speechUnits} units in \${secs}s). Comfortable is \${minPace}-\${maxPace}; \` +
+          \`~\${suggested} speech units would sit in the middle.\`
       );
     }
   }
