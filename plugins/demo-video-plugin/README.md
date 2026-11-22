@@ -175,9 +175,9 @@ It prepares local copy and measured chapters, preserves manual edits when the mo
 unchanged, and never uploads or publishes.
 
 
-## Windows Chinese demo example
+## Windows Chinese voiceover support
 
-The marketplace includes a runnable Windows example at [`examples/qianchuan-collector-demo`](../../examples/qianchuan-collector-demo). It demonstrates Chinese narration pacing, punctuation-aware subtitle segmentation, Microsoft Edge TTS (`zh-CN-XiaoxiaoNeural`), isolated mock APIs, and a PowerShell entry point. The sample's source bundle can be extracted and executed after cloning the marketplace repository; generated audio and video stay local.
+For Mandarin narration on Windows, the `demo-voiceover` skill supports Microsoft Edge TTS as an optional provider. The default female voice is `zh-CN-XiaoxiaoNeural`. It requires Python 3.9+, `edge-tts`, FFmpeg/ffprobe, and network access to Microsoft's Edge TTS service; it does not require an ElevenLabs API key. See `skills/demo-voiceover/SKILL.md` for usage and measurement/reconciliation steps.
 
 ## Layout
 
