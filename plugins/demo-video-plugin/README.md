@@ -174,6 +174,11 @@ After final-movie approval, the YouTube helper creates `demo/<videoId>/youtube/`
 It prepares local copy and measured chapters, preserves manual edits when the movie checksum is
 unchanged, and never uploads or publishes.
 
+
+## Windows Chinese demo example
+
+The marketplace includes a runnable Windows example at [`examples/qianchuan-collector-demo`](../../examples/qianchuan-collector-demo). It demonstrates Chinese narration pacing, punctuation-aware subtitle segmentation, Microsoft Edge TTS (`zh-CN-XiaoxiaoNeural`), isolated mock APIs, and a PowerShell entry point. The sample's source bundle can be extracted and executed after cloning the marketplace repository; generated audio and video stay local.
+
 ## Layout
 
 ```

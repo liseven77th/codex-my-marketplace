@@ -324,7 +324,7 @@ The source marketplace's four `.lsp.json` plugins are therefore not published he
 │       ├── hooks/                 # Lifecycle hooks and helpers
 │       ├── scripts/               # Deterministic workflow utilities
 │       └── .mcp.json              # MCP server definitions
-└── _archive/                      # Retired, unpublished plugins
+├── examples/\n│   └── qianchuan-collector-demo/  # Reproducible Windows Chinese demo-video example\n└── _archive/                      # Retired, unpublished plugins
 ```
 
 Marketplace entries resolve to `./plugins/<plugin-name>`. Each active plugin has a matching native manifest, and archived plugins are deliberately absent from the marketplace.
@@ -355,6 +355,23 @@ Use the cachebuster and reinstall flow from Codex's `plugin-creator` skill when 
 - [`_archive/company.md`](_archive/company.md): original design specification
 
 To restore an archived plugin, move it back under `plugins/`, update its Codex manifest, and register it in the marketplace.
+
+
+## Windows Example: Qianchuan Collector Demo
+
+A reproducible Windows 11 example for the `demo-video-plugin`. It includes the original user-provided collector source, an isolated mock API, an approved seven-section Chinese storyboard, Chinese pace/caption handling, Edge TTS narration scripts, Playwright state capture, and FFmpeg rendering.
+
+**Safety:** the example uses mock data only, does not sign in to a real Qianchuan account, does not read cookies, and blocks the material-delete endpoint with HTTP 403. Its mock server binds only to `127.0.0.1:18765`; the real tool's default port `8765` is not used.
+
+Clone this branch and run from the repository root:
+
+```powershell
+git clone --branch codex/windows-zh-demo-video --single-branch https://github.com/liseven77th/codex-my-marketplace.git
+cd codex-my-marketplace
+powershell -ExecutionPolicy Bypass -File .\examples\qianchuan-collector-demo\extract-and-run.ps1 -InstallDeps
+```
+
+The default run generates the Mandarin female voice (`zh-CN-XiaoxiaoNeural`) and both silent-review and voiced MP4s. If Edge TTS is unreachable, add `-SkipVoice` to render the silent subtitle review version only. See [the example README](examples/qianchuan-collector-demo/README.md) for prerequisites and individual commands. Generated workspace, audio, screenshots, and MP4s remain local and are gitignored.
 
 ## Author
 
