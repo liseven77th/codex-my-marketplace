@@ -26,7 +26,7 @@ This marketplace adapts [`claude-my-marketplace`](https://github.com/lukaskeller
 | [media-plugin](plugins/media-plugin) | `v1.15.1` | Image, video, music, speech, icon, SVG, and data-visualization workflows | 10 | 1 |
 | [web-design-plugin](plugins/web-design-plugin) | `v1.6.0` | Brief to working React/Vite website or webapp | 4 | 11 |
 | [dev-tools-plugin](plugins/dev-tools-plugin) | `v1.6.0` | Thinking, Q&A, git, code hygiene, dependencies, and docs | 9 | 2 |
-| [demo-video-plugin](plugins/demo-video-plugin) | `v1.1.0` | Repository to narrated, edited demo video | 8 | 4 |
+| [demo-video-plugin](plugins/demo-video-plugin) | `v1.1.1` | Repository to narrated, edited demo video | 8 | 4 |
 | [infra-plugin](plugins/infra-plugin) | `v1.1.0` | Kubernetes, Istio, Helm, Terraform, Traefik, and auth | 6 | - |
 | [design-plugin](plugins/design-plugin) | `v1.3.0` | Creative direction, design systems, and design review | 4 | 1 |
 | [office-plugin](plugins/office-plugin) | `v5.1.0` | PPTX, DOCX, and XLSX generation and editing | 3 | - |
@@ -258,7 +258,7 @@ For the demo-video toolchain, run `$demo-setup` once per machine before `$demo-v
 | `OBS_WEBSOCKET_PASSWORD` | demo-video-plugin (optional) | Password for the OBS recorder's WebSocket server. `OBS_WEBSOCKET_URL` overrides the default `ws://127.0.0.1:4455`. |
 | `MEDIA_OUTPUT_DIR` | media-plugin | Preferred absolute output directory. Returning file paths instead of base64 keeps large media out of the conversation context. Defaults to the current directory. |
 
-Do not store credentials in this repository.
+Edge TTS is an optional alternative for Mandarin narration and does not use `ELEVENLABS_API_KEY`; it requires the `edge-tts` Python package and network access to Microsoft's service. Do not store credentials in this repository.
 
 ### macOS and Linux
 
@@ -324,7 +324,7 @@ The source marketplace's four `.lsp.json` plugins are therefore not published he
 │       ├── hooks/                 # Lifecycle hooks and helpers
 │       ├── scripts/               # Deterministic workflow utilities
 │       └── .mcp.json              # MCP server definitions
-├── examples/\n│   └── qianchuan-collector-demo/  # Reproducible Windows Chinese demo-video example\n└── _archive/                      # Retired, unpublished plugins
+├── examples/\n└── _archive/                      # Retired, unpublished plugins
 ```
 
 Marketplace entries resolve to `./plugins/<plugin-name>`. Each active plugin has a matching native manifest, and archived plugins are deliberately absent from the marketplace.
@@ -359,7 +359,7 @@ To restore an archived plugin, move it back under `plugins/`, update its Codex m
 
 ## Windows Chinese voiceover support
 
-The `demo-video-plugin` includes Chinese-aware narration pacing and punctuation-based caption segmentation, plus an optional Microsoft Edge TTS provider using the Mandarin female voice `zh-CN-XiaoxiaoNeural`. Windows usage and prerequisites are documented in `plugins/demo-video-plugin/skills/demo-voiceover/SKILL.md`; the generator is `plugins/demo-video-plugin/scripts/tts-edge.py` with a PowerShell entry point in `scripts/generate-voice.ps1`.
+The `demo-video-plugin` includes Chinese-aware narration pacing and punctuation-based caption segmentation, plus an optional Microsoft Edge TTS provider using the Mandarin female voice `zh-CN-XiaoxiaoNeural`. Windows usage and prerequisites are documented in `plugins/demo-video-plugin/skills/demo-voiceover/SKILL.md`; the generator is `plugins/demo-video-plugin/scripts/tts-edge.py` with a PowerShell entry point in `plugins/demo-video-plugin/scripts/generate-voice.ps1`.
 
 ## Author
 
