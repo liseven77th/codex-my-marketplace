@@ -101,7 +101,8 @@ Each one prevents a specific expensive failure.
 - **ffmpeg / ffprobe** — every transcode and measurement
 - **Node ≥ 18** — scripts and Remotion
 - **uvx** — runs the `demo-elevenlabs` MCP server
-- **`ELEVENLABS_API_KEY`**
+- **`ELEVENLABS_API_KEY`** (only when using the ElevenLabs provider)
+- **Edge TTS (optional alternative)** — Python ≥ 3.9, `edge-tts`, network access to Microsoft's Edge TTS service, and `ffprobe`; default Mandarin female voice `zh-CN-XiaoxiaoNeural`.
 - **Playwright browsers** — `npx playwright install chromium`
 - **Remotion dependencies** — bundled in `demo/studio/package.json` and installed on first render.
   Optional agent skills for custom compositions: `npx skills add remotion-dev/skills`

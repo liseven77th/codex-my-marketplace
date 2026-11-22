@@ -59,6 +59,31 @@ readable.
 **Generate one section first and listen to it** before doing the rest, especially if the demo
 contains a product name or acronym. Fixing pronunciation after ten files is ten regenerations.
 
+
+## Alternative provider: Microsoft Edge TTS
+
+Use this path when the storyboard sets \`meta.voice.provider: "edge-tts"\`, or when the user explicitly chooses a no-API-key Mandarin voice. Do **not** call the ElevenLabs MCP for those sections.
+
+- Default Mandarin female voice: \`zh-CN-XiaoxiaoNeural\`.
+- Requires Python 3.9+, the \`edge-tts\` package, \`ffmpeg/ffprobe\`, and outbound network access to Microsoft's Edge TTS service.
+- It does not require an ElevenLabs API key or consume ElevenLabs credits.
+- It is an online service, not an offline/local TTS engine; do not promise it will work in an offline or network-restricted environment.
+
+Commands:
+
+\`\`\`bash
+python -m pip install --upgrade edge-tts
+python scripts/tts-edge.py --project . --voice zh-CN-XiaoxiaoNeural --rate +0%
+\`\`\`
+
+Windows PowerShell:
+
+\`\`\`powershell
+powershell -ExecutionPolicy Bypass -File scripts/generate-voice.ps1 -Project .
+\`\`\`
+
+The script writes \`demo/audio/<section-id>.mp3\` and a measured \`<section-id>.json\` sidecar for every narrated section. Re-run \`scripts/reconcile.mjs --project .\` after generation, then render; never reuse a timeline measured before the audio was created.
+
 ## Measurement is automatic
 
 The `probe-audio` hook ffprobes each new file, writes `demo/audio/<id>.json`, and compares it
